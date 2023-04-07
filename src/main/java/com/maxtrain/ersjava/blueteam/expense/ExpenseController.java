@@ -38,19 +38,19 @@ public class ExpenseController {
 		return new ResponseEntity<Expense>(expense.get(), HttpStatus.OK);
 	}
 
-	
+	// ***********Additional Get All Expenses in Approved Method***********
 	@GetMapping ("approved")
 	public ResponseEntity<Iterable<Expense>> getExpensesApproved(){
 		Iterable<Expense> expensesApproved = expRepo.findByStatus(Status_APPROVED);
 		return new ResponseEntity<Iterable<Expense>>(expensesApproved, HttpStatus.OK);
 	}
 	
+	// ***********Additional Get All Expenses in Reveiw Method***********
 	@GetMapping ("review")
 	public ResponseEntity <Iterable<Expense>> getExpensesInReview(){
 		Iterable<Expense> expensesInReview = expRepo.findByStatus(Status_REVIEW);
 		return new ResponseEntity<Iterable<Expense>>(expensesInReview, HttpStatus.OK);
-	}
-	
+	}	
 
 	@SuppressWarnings("rawtypes")
 	@PutMapping("{id}")
@@ -67,27 +67,7 @@ public class ExpenseController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-
-	// ***********Additional Pay Expense Method***********
-	@SuppressWarnings("rawtypes")
-	@PutMapping("pay/{expenseId}")
-	public ResponseEntity payExpense(@PathVariable int expenseId) {
-		Optional<Expense> expense = expRepo.findById(expenseId);
-		if(expense.isEmpty()) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-		Expense paidExpense = expense.get();
-		Employee paidEmployee = paidExpense.getEmployee();
-		paidExpense.setStatus("PAID");
-		paidEmployee.setExpensesPaid(paidEmployee.getExpensesPaid() + paidExpense.getTotal());
-		paidEmployee.setExpensesDue(paidEmployee.getExpensesDue() - paidExpense.getTotal());
-		expRepo.save(paidExpense);
-		empRepo.save(paidEmployee);
-		return new ResponseEntity<>(HttpStatus.OK);
-		
-	}
-	
-
+	// ***********Additional Set Expense to Reveiw or Approved Method***********
 	@SuppressWarnings("rawtypes")
 	@PutMapping("review/{id}")
 	public ResponseEntity reviewExpense(@PathVariable int id, @RequestBody Expense expense) {
@@ -96,6 +76,7 @@ public class ExpenseController {
 		return putExpense(id, expense);
 	}
 	
+	// ***********Additional Approve Expense Method***********
 	@SuppressWarnings("rawtypes")
 	@PutMapping("approve/{id}")
 		public ResponseEntity approveExpense(@PathVariable int id, @RequestBody Expense expense) {
@@ -103,6 +84,7 @@ public class ExpenseController {
 		return putExpense(id, expense);
 	}
 	
+	// ***********Additional Reject Expense Method***********	
 	@SuppressWarnings("rawtypes")
 	@PutMapping("reject/{id}")
 	public ResponseEntity rejectExpense(@PathVariable int id, @RequestBody Expense expense) {
@@ -111,9 +93,9 @@ public class ExpenseController {
 	}
 	
 
-	// ***********Additional Pay Expense Method Version 2***********
+	// ***********Additional Pay Expense Method***********
 	@SuppressWarnings("rawtypes")
-	@PutMapping("payv2/{expenseId}")
+	@PutMapping("pay/{expenseId}")
 	public ResponseEntity payExpenseV2(@PathVariable int expenseId) {
 		Optional<Expense> expense = expRepo.findById(expenseId);
 		if(expense.isEmpty()) {
@@ -165,6 +147,7 @@ public class ExpenseController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
+	// ***********Additional Private Udpate Employee Expenses Due and Paid Method***********
 	private boolean updateEmployeeExpensesDueAndPaid(int employeeId) {
 		Optional<Employee> anEmployee = empRepo.findById(employeeId);
 		if(anEmployee.isEmpty()) {
