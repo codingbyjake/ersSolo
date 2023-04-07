@@ -83,6 +83,8 @@ public class ExpenselineController {
 		
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
+	
+	// ***********Additional Get All Expenses in Approved Method***********
 	private boolean recalculateExpenseTotal(int expenseId) {
 		Optional<Expense> aExpense = expRepo.findById(expenseId);
 		if(aExpense.isEmpty()) {
